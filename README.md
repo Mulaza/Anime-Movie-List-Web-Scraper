@@ -2,8 +2,8 @@
 
 ## Dependencies 
 
-+ [Beautiful Soup] (https://pypi.org/project/beautifulsoup4/)
-+ [Requests] (https://pypi.org/project/requests/)
++ [Beautiful Soup](https://pypi.org/project/beautifulsoup4/)
++ [Requests](https://pypi.org/project/requests/)
 
 ## Purpose 
 
