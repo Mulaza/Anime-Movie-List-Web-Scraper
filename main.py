@@ -3,9 +3,15 @@
 # ------------------------------------------------------------------------------------------------------------------
 
 # Need to be installed with pip
-from bs4 import BeautifulSoup
-import requests
 
+# Dependencies
+import requests
+from bs4 import BeautifulSoup
+from progress.bar import IncrementalBar
+
+
+import time
+import json
 # ------------------------------------------------------------------------------------------------------------------
 
 # Go to imdb 150 top Anime movie list page
@@ -13,22 +19,80 @@ url = "https://www.imdb.com/list/ls026128329/"
 req = requests.get(url)
 soup = BeautifulSoup(req.text, "html.parser")
 
-# look fot only the 'h3' tage with the class of 'lister-item-header'
+
+# Parts of the webpages where we're getting out data out pf
 tags = soup.findAll("h3", class_="lister-item-header")
+spans = soup.findAll("span", class_="runtime")
+spans2 = soup.findAll("span", class_="lister-item-index unbold text-primary")
+boxes = soup.findAll("div", class_="lister-item mode-detail")
+
+# defining a progress bar
+bar = IncrementalBar('Collecting...', max = len(tags))
 
 
-# create an empty string to hold the movie names
-listString = ""
+outList = []
 
 
-# loop through the h3 tags to get a list of a tags and het the text within them
-for a in tags:
+# Helper functions
+def extractDescriptions():
+    list = []
 
-    # append every movie name to the end of a list
-    listString = listString + "{} \n".format(a.find_all('a')[0].text)
+    # the movie descriptions
+    for i in boxes:
+        list.append(i.findAll("p")[1].text.strip())
+
+    return list
+def extractRank():
+    list = []
+
+    # the movie ranks
+    for i in spans2:
+        list.append(int(i.text.split('.')[0]))
+
+    return list
+def extractRuntimes():
+    list = []
+
+    # the movie runtimes
+    for i in spans:
+        list.append(int(i.text.split(" ")[0]))
+
+    return list
+def extractNames():
+    list = []
+
+    # the movie names
+    for a in tags:
+        list.append(a.find_all('a')[0].text)
+
+    return list
 
 
-# create a file to add and hold all of the movie names
-with open("Anime-Movie-list.txt", 'a') as fileObject:
-    fileObject.write(listString)
+
+# Extracting the needed info
+descriptionsList = extractDescriptions()
+rankList = extractRank()
+runtimesList = extractRuntimes()
+namesList = extractNames()
+
+
+
+
+if (len(descriptionsList) == len(runtimesList) == len(namesList) == len(rankList)):
+    for i in range(len(descriptionsList)):
+        outList.append(
+            {
+                "rank": rankList[i],
+                "name": namesList[i],
+                "runtime": runtimesList[i],
+                "description": descriptionsList[1]
+            }
+        )
+
+
+
+
+# save to a json file
+with open("Anime-Movie-list.json", 'w') as fileObject:
+    json.dump(outList, fileObject)
 
