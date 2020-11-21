@@ -7,7 +7,6 @@
 # Dependencies
 import requests
 from bs4 import BeautifulSoup
-from progress.bar import IncrementalBar
 
 
 import time
@@ -26,12 +25,8 @@ spans = soup.findAll("span", class_="runtime")
 spans2 = soup.findAll("span", class_="lister-item-index unbold text-primary")
 boxes = soup.findAll("div", class_="lister-item mode-detail")
 
-# defining a progress bar
-bar = IncrementalBar('Collecting...', max = len(tags))
-
 
 outList = []
-
 
 # Helper functions
 def extractDescriptions():
