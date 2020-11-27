@@ -1,4 +1,4 @@
-# Anime-Movie-List-Web-Scraper
+# Anime-Movie-List-Web-Scraper 🍥🍜
 
 ## Dependencies 
 
